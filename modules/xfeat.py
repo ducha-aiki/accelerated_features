@@ -20,10 +20,11 @@ class XFeat(nn.Module):
 		It supports inference for both sparse and semi-dense feature extraction & matching.
 	"""
 
-	def __init__(self, weights = os.path.abspath(os.path.dirname(__file__)) + '/../weights/xfeat.pt', top_k = 4096):
+	def __init__(self, weights = os.path.abspath(os.path.dirname(__file__)) + '/../weights/xfeat.pt', top_k = 4096, th=0.05):
 		super().__init__()
 		self.dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		self.net = XFeatModel().to(self.dev).eval()
+		self.th=th
 		self.top_k = top_k
 
 		if weights is not None:
@@ -59,7 +60,7 @@ class XFeat(nn.Module):
 
 		#Convert logits to heatmap and extract kpts
 		K1h = self.get_kpts_heatmap(K1)
-		mkpts = self.NMS(K1h, threshold=0.05, kernel_size=5)
+		mkpts = self.NMS(K1h, threshold=self.th, kernel_size=5)
 
 		#Compute reliability scores
 		_nearest = InterpolateSparse2d('nearest')
