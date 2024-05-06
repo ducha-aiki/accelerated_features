@@ -173,7 +173,7 @@ class XFeat(nn.Module):
 		""" Guarantee that image is divisible by 32 to avoid aliasing artifacts. """
 		if isinstance(x, np.ndarray) and x.shape == 3:
 			x = torch.tensor(x).permute(2,0,1)[None]
-		x = x.to(self.dev).float()
+		x = x.to(self.dev)#.float()
 
 		H, W = x.shape[-2:]
 		_H, _W = (H//32) * 32, (W//32) * 32
