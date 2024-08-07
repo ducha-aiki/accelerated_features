@@ -2,9 +2,13 @@
 [Guilherme Potje](https://guipotje.github.io/) · [Felipe Cadar](https://eucadar.com/) · [Andre Araujo](https://andrefaraujo.github.io/) · [Renato Martins](https://renatojmsdh.github.io/) · [Erickson R. Nascimento](https://homepages.dcc.ufmg.br/~erickson/)
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_matching.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_matching.ipynb)  
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm-dark.svg)](https://huggingface.co/spaces/qubvel-hf/xfeat)
 
-### [[ArXiv]](https://arxiv.org/abs/2404.19174) | [[Project Page]](https://www.verlab.dcc.ufmg.br/descriptors/xfeat_cvpr24/) |  [[CVPR'24 Paper]](https://cvpr.thecvf.com/)
+### [[ArXiv]](https://arxiv.org/abs/2404.19174) | [[Project Page]](https://www.verlab.dcc.ufmg.br/descriptors/xfeat_cvpr24/) |  [[CVPR'24 Paper]](https://openaccess.thecvf.com/content/CVPR2024/html/Potje_XFeat_Accelerated_Features_for_Lightweight_Image_Matching_CVPR_2024_paper.html)
+
+- Training code is now available -> [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/XFeat_training_example.ipynb)
+- 🎉 **New!** XFeat + LighterGlue (smaller version of LightGlue) available! 🚀 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat%2Blg_torch_hub.ipynb)
 
 <div align="center" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
   <div style="display: flex; justify-content: space-around; width: 100%;">
@@ -18,7 +22,7 @@
 
 **TL;DR**: Really fast learned keypoint detector and descriptor. Supports sparse and semi-dense matching.
 
-Just wanna quickly try on your images? Check this out: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_torch_hub.ipynb)
+Just wanna quickly try on your images? Check this out: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_torch_hub.ipynb) [![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm-dark.svg)](https://huggingface.co/spaces/qubvel-hf/xfeat)
 
 ## Table of Contents
 - [Introduction](#introduction) <img align="right" src='./figs/xfeat_quali.jpg' width=360 />
@@ -28,6 +32,7 @@ Just wanna quickly try on your images? Check this out: [![Open In Colab](https:/
   - [Training](#training)
   - [Evaluation](#evaluation)
 - [Real-time demo app](#real-time-demo)
+- [XFeat+LightGlue](#xfeat-with-lightglue)
 - [Contribute](#contributing)
 - [Citation](#citation)
 - [License](#license)
@@ -55,6 +60,19 @@ This repository contains the official implementation of the paper: *[XFeat: Acce
 XFeat extracts a keypoint heatmap $\mathbf{K}$, a compact 64-D dense descriptor map $\mathbf{F}$, and a reliability heatmap $\mathbf{R}$. It achieves unparalleled speed via early downsampling and shallow convolutions, followed by deeper convolutions in later encoders for robustness. Contrary to typical methods, it separates keypoint detection into a distinct branch, using $1 \times 1$ convolutions on an $8 \times 8$ tensor-block-transformed image for fast processing, being one of the few current learned methods that decouples detection & description and can be processed independently.
 
 <img align="center" src="./figs/xfeat_arq.png" width=1000 />
+
+
+## Timing Analyses on CPU.
+
+We show that both detection branch & match refinement module costs are small and bring significant advantages in accuracy (please check the ablation section in the paper).
+
+<img align="center" src="./figs/timings.png" width=840 />
+
+
+Furthermore, XFeat performs effectively in both indoor and outdoor scenes, achieving an excellent compute-accuracy trade-off as demonstrated below. Note that in the paper, the teaser figure has a VGA resolution on the x-axis and 1,200 pixels on the y-axis. Below, we present an updated figure for improved clarity, maintaining the same x-y axis resolution.
+
+<img align="center" src="./figs/speed_accuracy.png" width=840 />
+
 
 ## Installation
 XFeat has minimal dependencies, only relying on torch. Also, XFeat does not need a GPU for real-time sparse inference (vanilla pytorch w/o any special optimization), unless you run it on high-res images. If you want to run the real-time matching demo, you will also need OpenCV.
@@ -90,6 +108,8 @@ For your convenience, we provide ready to use notebooks for some examples.
 | Minimal example | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/minimal_example.ipynb) |
 | Matching & registration example | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_matching.ipynb) |
 | Torch hub example | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat_torch_hub.ipynb) |
+| Training example (synthetic) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/XFeat_training_example.ipynb) |
+| XFeat + LightGlue | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat%2Blg_torch_hub.ipynb) |
 
 
 ### Inference
@@ -118,7 +138,23 @@ output = xfeat.detectAndCompute(torch.randn(1,3,480,640), top_k = 4096)[0]
 ```
 
 ### Training
-XFeat training code will be released soon. Please stay tuned.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/XFeat_training_example.ipynb)
+
+To train XFeat as described in the paper, you will need MegaDepth & COCO_20k subset of COCO2017 dataset.
+You can obtain the full COCO2017 train data at https://cocodataset.org/.
+However, we [make available](https://drive.google.com/file/d/1ijYsPq7dtLQSl-oEsUOGH1fAy21YLc7H/view?usp=drive_link) a subset of COCO for convenience. We simply selected a subset of 20k images according to image resolution. Please check COCO [terms of use](https://cocodataset.org/#termsofuse) before using the data.
+
+To reproduce the training setup from the paper, please follow the steps:
+1. Download [COCO_20k](https://drive.google.com/file/d/1ijYsPq7dtLQSl-oEsUOGH1fAy21YLc7H/view?usp=drive_link) containing a subset of COCO2017;
+2. Download MegaDepth dataset. You can follow [LoFTR instructions](https://github.com/zju3dv/LoFTR/blob/master/docs/TRAINING.md#download-datasets), we use the same standard as LoFTR. Then put the megadepth indices inside the MegaDepth root folder following the standard below:
+```bash
+{megadepth_root_path}/train_data/megadepth_indices #indices
+{megadepth_root_path}/MegaDepth_v1 #images & depth maps & poses
+```
+3. Finally you can call training
+```bash
+python3 -m modules.training.train --training_type xfeat_default  --megadepth_root_path <path_to>/MegaDepth --synthetic_root_path <path_to>/coco_20k --ckpt_save_path /path/to/ckpts
+```
 
 ### Evaluation
 XFeat evaluation code will be released soon, alongside the training scripts. Please stay tuned.
@@ -142,16 +178,27 @@ python3 realtime_demo.py --method SIFT
 python3 realtime_demo.py --method ORB
 ```
 
+## XFeat with LightGlue
+We have trained a lighter version of LightGlue (LighterGlue). It has fewer parameters and is approximately three times faster than the original LightGlue. Special thanks to the developers of the [GlueFactory](https://github.com/cvg/glue-factory) library, which enabled us to train this version of LightGlue with XFeat.
+Below, we compare the original SP + LG using the [GlueFactory](https://github.com/cvg/glue-factory) evaluation script on MegaDepth-1500.
+Please follow the example to test on your own images:  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/verlab/accelerated_features/blob/main/notebooks/xfeat%2Blg_torch_hub.ipynb)
+
+Metrics (AUC @ 5 / 10 / 20)
+| Setup           | Max Dimension | Keypoints | XFeat + LighterGlue           | SuperPoint + LightGlue (Official) |
+|-----------------|---------------|-----------|-------------------------------|-----------------------------------|
+| **Fast**  | 640           | 1300      | 0.444 / 0.610 / 0.746       | 0.469 / 0.633 / 0.762          |
+| **Accurate** | 1024          | 4096      | 0.564 / 0.710 / 0.819       | 0.591 / 0.738 / 0.841            |
+
 ## Contributing
 Contributions to XFeat are welcome! 
-Currently, it would be nice to have an export script to efficient deployment engines such as TensorRT and ONNX. Also, it would be cool to train a lightweight learned matcher on top of XFeat local features.
+Currently, it would be nice to have an export script to efficient deployment engines such as TensorRT and ONNX. Also, it would be cool to train other lightweight learned matchers on top of XFeat local features.
 
 ## Citation
 If you find this code useful for your research, please cite the paper:
 
 ```bibtex
 @INPROCEEDINGS{potje2024cvpr,
-  author={Guilherme {Potje} and and Felipe {Cadar} and Andre {Araujo} and Renato {Martins} and Erickson R. {Nascimento}},
+  author={Guilherme {Potje} and Felipe {Cadar} and Andre {Araujo} and Renato {Martins} and Erickson R. {Nascimento}},
   booktitle={2024 IEEE / CVF Computer Vision and Pattern Recognition (CVPR)}, 
   title={XFeat: Accelerated Features for Lightweight Image Matching}, 
   year={2024}}
